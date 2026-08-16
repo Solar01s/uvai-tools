@@ -1,2 +1,48 @@
 # uvai-tools
-uvai-tools is a tool for text-based nueral networks that allows them to call functions using standart tags. The "connect" function is universal and allows you to use your generative model with any signature
+
+Набор тег-команд для ИИ-ассистентов (`<calculate>`, `<date>`, `<time>`,
+`<search>`, `<fix_tags>`, `<layout>`) плюс универсальная обвязка
+`connect` / `system` / `system_stream` для подключения **любой**
+генеративной модели — независимо от формата истории сообщений и
+сигнатуры вашей функции генерации.
+
+## Установка
+
+```bash
+pip install uvai-tools
+
+# если нужен тег <search> (веб-поиск + парсинг страниц)
+pip install "uvai-tools[search]"
+```
+
+## Быстрый старт
+
+```python
+from tools import connect
+
+def my_generate(history):
+    # ваш вызов модели, например:
+    # response = client.messages.create(messages=history, ...)
+    # return response.content[0].text
+    ...
+
+result = connect("Посчитай <calculate 2+2>", my_generate)
+```
+
+## Поддерживаемые теги
+
+| Тег | Что делает |
+|---|---|
+| `<calculate 2+2>` | Вычисляет выражение |
+| `<date>`, `<date +1y>` | Текущая/сдвинутая дата |
+| `<time>`, `<time +30m>` | Текущее/сдвинутое время |
+| `<search запрос>` | Веб-поиск + краткая выжимка со страниц |
+| `<fix_tags>` | Автоматически закрывает/выравнивает незакрытые HTML-теги в тексте до этого места |
+| `<layout текст>` | Переключает раскладку текста RU⇄EN |
+
+## Кастомизация под свой ИИ
+
+`connect` / `system` / `system_stream` работают из коробки со стандартным
+форматом `{"role": ..., "content": ...}`, но принимают параметры для
+любого другого формата сообщений, нестандартной сигнатуры функции
+генерации или async-моделей. Подробности — в докстрингах функций.
